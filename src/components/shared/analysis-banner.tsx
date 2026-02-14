@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Info, Sparkles, Loader2 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils/date';
+import { ANALYSIS } from '@/lib/config';
 
 interface AnalysisBannerProps {
   /** The created_at of the most recent item (narrative or idea) on this page */
@@ -28,10 +29,9 @@ export function AnalysisBanner({ latestItemDate, itemType, onAnalysisComplete }:
         const totalData = await totalRes.json();
         setTotalSignals(totalData.total || 0);
 
-        // Count signals newer than the last analysis
+        // Count signals collected after the last analysis
         if (latestItemDate) {
-          const sinceHours = Math.max(1, (Date.now() - new Date(latestItemDate).getTime()) / 3600000);
-          const countRes = await fetch(`/api/signals?hours=${Math.ceil(sinceHours)}&pageSize=1`);
+          const countRes = await fetch(`/api/signals?since=${encodeURIComponent(latestItemDate)}&pageSize=1`);
           const countData = await countRes.json();
           setNewSignalCount(countData.total || 0);
         }
@@ -114,12 +114,21 @@ export function AnalysisBanner({ latestItemDate, itemType, onAnalysisComplete }:
         </>
       );
     }
+    if (newSignalCount >= ANALYSIS.minSignals) {
+      return (
+        <>
+          These {itemType} were synthesized{' '}
+          <span className="font-medium">{formatRelativeTime(latestItemDate!)}</span>.
+          {' '}{newSignalCount} new signal{newSignalCount !== 1 ? 's' : ''} collected since then — ready for re-analysis.
+        </>
+      );
+    }
     if (newSignalCount > 0) {
       return (
         <>
           These {itemType} were synthesized{' '}
           <span className="font-medium">{formatRelativeTime(latestItemDate!)}</span>.
-          {' '}{newSignalCount} new signal{newSignalCount !== 1 ? 's' : ''} collected since then.
+          {' '}{newSignalCount} new signal{newSignalCount !== 1 ? 's' : ''} collected since then (need at least {ANALYSIS.minSignals} to re-analyze).
         </>
       );
     }
@@ -132,11 +141,12 @@ export function AnalysisBanner({ latestItemDate, itemType, onAnalysisComplete }:
     );
   };
 
-  const bannerColor = !hasAnalysis || newSignalCount > 0
+  const canAnalyze = !hasAnalysis || newSignalCount >= ANALYSIS.minSignals;
+  const bannerColor = canAnalyze
     ? 'border-blue-200 bg-blue-50/80'
     : 'border-slate-200 bg-slate-50/80';
-  const iconColor = !hasAnalysis || newSignalCount > 0 ? 'text-blue-500' : 'text-slate-400';
-  const textColor = !hasAnalysis || newSignalCount > 0 ? 'text-blue-700' : 'text-slate-600';
+  const iconColor = canAnalyze ? 'text-blue-500' : 'text-slate-400';
+  const textColor = canAnalyze ? 'text-blue-700' : 'text-slate-600';
 
   return (
     <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-3 rounded-lg border px-4 py-2.5 text-sm ${bannerColor}`}>
@@ -148,7 +158,7 @@ export function AnalysisBanner({ latestItemDate, itemType, onAnalysisComplete }:
       </div>
       <Button
         onClick={triggerAnalysis}
-        disabled={analyzing}
+        disabled={analyzing || !canAnalyze}
         size="sm"
         className="shrink-0"
       >

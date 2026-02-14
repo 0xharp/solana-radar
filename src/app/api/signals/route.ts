@@ -7,6 +7,7 @@ export async function GET(request: Request) {
     const source = searchParams.get('source');
     const strength = searchParams.get('strength');
     const hours = parseInt(searchParams.get('hours') || '0');
+    const since = searchParams.get('since');
     const page = parseInt(searchParams.get('page') || '1');
     const pageSize = parseInt(searchParams.get('pageSize') || '50');
 
@@ -20,9 +21,11 @@ export async function GET(request: Request) {
 
     if (source) query = query.eq('source', source);
     if (strength) query = query.eq('strength', strength);
-    if (hours > 0) {
-      const since = new Date(Date.now() - hours * 3600000).toISOString();
-      query = query.gte('created_at', since);
+    if (since) {
+      query = query.gt('created_at', since);
+    } else if (hours > 0) {
+      const cutoff = new Date(Date.now() - hours * 3600000).toISOString();
+      query = query.gte('created_at', cutoff);
     }
 
     const { data: signals, error, count } = await query;
