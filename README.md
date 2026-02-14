@@ -8,7 +8,7 @@ A production-quality tool that goes beyond "ask an LLM what's trending." Every d
 
 ## Live Tool & Repository
 
-- **Hosted Tool**: [solana-radar.vercel.app](https://solana-radar.vercel.app) _(update with actual URL after deployment)_
+- **Hosted Tool**: [solanaradar.vercel.app](https://solanaradar.vercel.app)
 - **Repository**: [github.com/0xharp/solana-radar](https://github.com/0xharp/solana-radar)
 
 ## How It Works
@@ -116,7 +116,7 @@ Signals with composite score >30 are grouped using Jaccard similarity (threshold
 
 ## Detected Narratives
 
-Narratives are **dynamically detected** from the latest fortnightly data window and displayed live in the tool at [/narratives](https://solana-radar.vercel.app/narratives). Each narrative includes:
+Narratives are **dynamically detected** from the latest fortnightly data window and displayed live in the tool at [/narratives](https://solanaradar.vercel.app/narratives). Each narrative includes:
 
 - **Title and summary** — LLM-synthesized description of the detected trend
 - **Confidence score** — How strongly the data supports this narrative (0-100)
@@ -128,7 +128,7 @@ Narratives are **not invented by the LLM** — they are algorithmically detected
 
 ## Build Ideas
 
-Product ideas are generated for the top narratives by confidence and displayed at [/ideas](https://solana-radar.vercel.app/ideas). Each idea includes:
+Product ideas are generated for the top narratives by confidence and displayed at [/ideas](https://solanaradar.vercel.app/ideas). Each idea includes:
 
 - **Creative product name** — Not generic "dashboards" or "trackers"
 - **Detailed description** — What the product does, what problem it solves, who benefits, why now
