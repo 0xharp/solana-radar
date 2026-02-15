@@ -1,4 +1,4 @@
-import { Github, Twitter } from 'lucide-react';
+import { Github, X } from 'lucide-react';
 import { ExternalLink } from 'lucide-react';
 
 export function Footer() {
@@ -35,7 +35,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
-              <Twitter className="h-3.5 w-3.5" />
+              <X className="h-3.5 w-3.5" />
               <span>@0xharp</span>
             </a>
             <a

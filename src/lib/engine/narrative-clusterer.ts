@@ -155,6 +155,8 @@ export async function synthesizeNarratives(
       }>;
     }>(prompt, { temperature: 0.3, maxTokens: 6000 });
 
+    console.log(`LLM returned ${result.narratives.length} narratives with confidence scores: ${result.narratives.map(n => `${n.title} (${n.confidenceScore})`).join(', ')}`);
+
     return result.narratives
       .filter(n => n.confidenceScore >= ANALYSIS.minNarrativeConfidence)
       .map((n, i) => {
